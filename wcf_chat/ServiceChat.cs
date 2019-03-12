@@ -4,6 +4,9 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
+using System.Data;
+using System.Data.SQLite;
+using System.IO;
 
 namespace wcf_chat
 {
@@ -11,20 +14,27 @@ namespace wcf_chat
     public class ServiceChat : IServiceChat
     {
         List<ServerUser> users = new List<ServerUser>();
-        int nextId = 1;
+        //int nextId = 1;
 
-        public int Connect(string name)
+        private String dbFileName;
+        private SQLiteConnection m_dbConn;
+        private SQLiteCommand m_sqlCmd;
+
+        public int Connect(string name, string password)
         {
-            ServerUser user = new ServerUser()
+            ConnectToBase();
+
+            ServerUser user = VerifyAccount(name, password);/** new ServerUser()
             {
                 Id = nextId,
                 Name = name,
                 Operation = OperationContext.Current
-            };
+            }; **/
 
-            nextId++;
+            //nextId++;
 
-            SendMsg(user.Name + " подключился к чату", 0);
+            SendMsg(": " + user.Name + "(" + user.Id + ")" + ": подключился к чату", 0);
+
             users.Add(user);
 
             return user.Id;
@@ -49,7 +59,7 @@ namespace wcf_chat
 
                 var user = users.FirstOrDefault(i => i.Id == id);
 
-                if (user != null)
+                if (user != null) 
                 {
                     answer += user.Name + " ";
                 }
@@ -58,6 +68,74 @@ namespace wcf_chat
 
                 item.Operation.GetCallbackChannel<IServiceChatCallback>().MsgCallback(answer);
             }
+        }
+
+        private void ConnectToBase()
+        {
+            m_dbConn = new SQLiteConnection();
+            m_sqlCmd = new SQLiteCommand();
+
+            dbFileName = "D:/CSharpProjects/wcf_chat/iComm.db";
+
+            try
+            {
+                m_dbConn = new SQLiteConnection("Data Source=" + dbFileName + ";Version=3;");
+                m_dbConn.Open();
+                m_sqlCmd.Connection = m_dbConn;
+
+                Console.WriteLine("Connected to SQL base");
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine("Error while connecting to SQL base: " + ex.Message);
+            }
+        }
+
+        private ServerUser VerifyAccount(string login, string password)
+        {
+            DataTable dTable = new DataTable();
+
+            String sqlQuery;
+
+            ServerUser user;
+
+            if (m_dbConn.State != ConnectionState.Open)
+            {
+                Console.WriteLine("SQL base not connected");
+                return null;
+            }
+
+            try
+            {
+                sqlQuery = "SELECT * FROM `users` WHERE `login`='" + login + "' AND `password`='" + password + "'";
+
+
+                SQLiteDataAdapter adapter = new SQLiteDataAdapter(sqlQuery, m_dbConn);
+                adapter.Fill(dTable);
+
+                if (dTable.Rows.Count > 0)
+                {
+                    Console.WriteLine("Пользователь " + login + " верификация пройдена.");
+
+                    user = new ServerUser()
+                    {
+                        Id = int.Parse(dTable.Rows[0][0].ToString()),
+                        Name = dTable.Rows[0][3].ToString(),
+                        Operation = OperationContext.Current
+                    };
+
+                    return user;
+
+                }
+                else
+                    Console.WriteLine("Пользователь " + login + " не найден.");
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+
+            return null;
         }
     }
 }

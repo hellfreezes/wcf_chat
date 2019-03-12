@@ -16,10 +16,10 @@ namespace ChatClient.ServiceChat {
     public interface IServiceChat {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceChat/Connect", ReplyAction="http://tempuri.org/IServiceChat/ConnectResponse")]
-        int Connect(string name);
+        int Connect(string name, string password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceChat/Connect", ReplyAction="http://tempuri.org/IServiceChat/ConnectResponse")]
-        System.Threading.Tasks.Task<int> ConnectAsync(string name);
+        System.Threading.Tasks.Task<int> ConnectAsync(string name, string password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IServiceChat/Disconnect", ReplyAction="http://tempuri.org/IServiceChat/DisconnectResponse")]
         void Disconnect(int id);
@@ -69,12 +69,12 @@ namespace ChatClient.ServiceChat {
                 base(callbackInstance, binding, remoteAddress) {
         }
         
-        public int Connect(string name) {
-            return base.Channel.Connect(name);
+        public int Connect(string name, string password) {
+            return base.Channel.Connect(name, password);
         }
         
-        public System.Threading.Tasks.Task<int> ConnectAsync(string name) {
-            return base.Channel.ConnectAsync(name);
+        public System.Threading.Tasks.Task<int> ConnectAsync(string name, string password) {
+            return base.Channel.ConnectAsync(name, password);
         }
         
         public void Disconnect(int id) {

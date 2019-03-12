@@ -14,9 +14,17 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ChatClient.ServiceChat;
 using System.ServiceModel;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace ChatClient
 {
+    public class CustomPropertys
+    {
+        public string Login { get; set; }
+        public string Password { get; set; }
+    }
+
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
@@ -26,9 +34,13 @@ namespace ChatClient
         ServiceChatClient client;
         int ID;
 
+        public string Login { get; set; }
+        public string Password { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
+            LoadPropertys();
         }
 
         void ConnectUser()
@@ -36,7 +48,7 @@ namespace ChatClient
             if (!isConnected)
             {
                 client = new ServiceChatClient(new InstanceContext(this));
-                ID = client.Connect(tbUserName.Text);
+                ID = client.Connect(Login, Password);
                 tbUserName.IsEnabled = false;
                 btnConnect.Content = "Disconnect";
                 isConnected = true;
@@ -94,6 +106,77 @@ namespace ChatClient
                     tbMessage.Text = string.Empty;
                 }
             }
+        }
+
+
+        private void LoadPropertys()
+        {
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.Load("props.xml");
+            // получим корневой элемент
+            XmlElement xRoot = xDoc.DocumentElement;
+
+            foreach (XmlNode xnode in xRoot)
+            {
+                // обходим все дочерние узлы элемента user
+                foreach (XmlNode childnode in xnode.ChildNodes)
+                {
+                    // если узел - company
+                    if (xnode.Name == "account")
+                    {
+                        Login = childnode.Value;
+                        tbUserName.Text = Login;
+                    }
+                    // если узел age
+                    if (xnode.Name == "password")
+                    {
+                        Password = childnode.Value;
+                    }
+                }
+            }
+        }
+
+        private void SavePropertys(CustomPropertys props)
+        {
+            XDocument xDoc = new XDocument();
+
+            // создаем новый элемент user
+            XElement userElem = new XElement("user");
+
+            // создаем элементы 
+            XElement companyElem = new XElement("account", props.Login);
+            XElement ageElem = new XElement("password", props.Password);
+
+            userElem.Add(companyElem);
+            userElem.Add(ageElem);
+
+            xDoc.Add(userElem);
+
+            xDoc.Save("props.xml");
+        }
+
+        private void btnAccount_Click(object sender, RoutedEventArgs e)
+        {
+            AccountWindow winAccount = new AccountWindow(Login, Password);
+            winAccount.Owner = this;
+            winAccount.WindowClosed += OnAccountWindowClosed;
+            winAccount.AccountSaved += OnAccountWindowsSaved;
+            winAccount.Show();
+            btnAccount.IsEnabled = false;
+        }
+
+        private void OnAccountWindowClosed(object sender, EventArgs e)
+        {
+            btnAccount.IsEnabled = true;
+        }
+
+        private void OnAccountWindowsSaved(object sender, AccountEventArgs e)
+        {
+            Login = e.Account;
+            Password = e.Password;
+
+            tbUserName.Text = Login;
+            SavePropertys(new CustomPropertys { Login = Login, Password = Password });
         }
     }
 }
