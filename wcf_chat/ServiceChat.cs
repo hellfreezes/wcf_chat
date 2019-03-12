@@ -24,14 +24,7 @@ namespace wcf_chat
         {
             ConnectToBase();
 
-            ServerUser user = VerifyAccount(name, password);/** new ServerUser()
-            {
-                Id = nextId,
-                Name = name,
-                Operation = OperationContext.Current
-            }; **/
-
-            //nextId++;
+            ServerUser user = VerifyAccount(name, password);
 
             SendMsg(": " + user.Name + "(" + user.Id + ")" + ": подключился к чату", 0);
 
@@ -75,7 +68,7 @@ namespace wcf_chat
             m_dbConn = new SQLiteConnection();
             m_sqlCmd = new SQLiteCommand();
 
-            dbFileName = "D:/CSharpProjects/wcf_chat/iComm.db";
+            dbFileName = "F:/csharp/wcf_chat/iComm.db";
 
             try
             {
