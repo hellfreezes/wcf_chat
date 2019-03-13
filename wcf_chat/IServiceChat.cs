@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
+using System.Collections.Generic;
 
 namespace wcf_chat
 {
@@ -19,11 +20,17 @@ namespace wcf_chat
 
         [OperationContract(IsOneWay = true)]
         void SendMsg(string msg, int id);
+
+        [OperationContract(IsOneWay = true)]
+        void UpdateUsersList();
     }
 
     public interface IServiceChatCallback
     {
         [OperationContract(IsOneWay = true)]
         void MsgCallback(string msg);
+
+        [OperationContract(IsOneWay = true)]
+        void UpdateUserListCallback(Dictionary<int, string> users);
     }
 }

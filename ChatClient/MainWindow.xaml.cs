@@ -12,10 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ChatClient.ServiceChat;
 using System.ServiceModel;
 using System.Xml;
 using System.Xml.Linq;
+using ChatClient.ServiceChat;
 
 namespace ChatClient
 {
@@ -49,6 +49,7 @@ namespace ChatClient
             {
                 client = new ServiceChatClient(new InstanceContext(this));
                 ID = client.Connect(Login, Password);
+                client.UpdateUsersList();
                 tbUserName.IsEnabled = false;
                 btnConnect.Content = "Disconnect";
                 isConnected = true;
@@ -60,6 +61,7 @@ namespace ChatClient
             if (isConnected)
             {
                 client.Disconnect(ID);
+                client.UpdateUsersList();
                 tbUserName.IsEnabled = true;
                 btnConnect.Content = "Connect";
                 client = null;
@@ -177,6 +179,11 @@ namespace ChatClient
 
             tbUserName.Text = Login;
             SavePropertys(new CustomPropertys { Login = Login, Password = Password });
+        }
+
+        public void UpdateUserListCallback(string[] users)
+        {
+            throw new NotImplementedException();
         }
     }
 }

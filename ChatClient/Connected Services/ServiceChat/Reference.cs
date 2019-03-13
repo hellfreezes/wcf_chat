@@ -32,6 +32,12 @@ namespace ChatClient.ServiceChat {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/SendMsg")]
         System.Threading.Tasks.Task SendMsgAsync(string msg, int id);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/UpdateUsersList")]
+        void UpdateUsersList();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/UpdateUsersList")]
+        System.Threading.Tasks.Task UpdateUsersListAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -39,6 +45,9 @@ namespace ChatClient.ServiceChat {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/MsgCallback")]
         void MsgCallback(string msg);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/UpdateUserListCallback")]
+        void UpdateUserListCallback(System.Collections.Generic.Dictionary<int, string> users);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -91,6 +100,14 @@ namespace ChatClient.ServiceChat {
         
         public System.Threading.Tasks.Task SendMsgAsync(string msg, int id) {
             return base.Channel.SendMsgAsync(msg, id);
+        }
+        
+        public void UpdateUsersList() {
+            base.Channel.UpdateUsersList();
+        }
+        
+        public System.Threading.Tasks.Task UpdateUsersListAsync() {
+            return base.Channel.UpdateUsersListAsync();
         }
     }
 }

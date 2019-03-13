@@ -33,6 +33,7 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import schemaLocation="http://localhost:8301/?xsd=xsd0" namespace="http://tempuri.org/" />
       <xsd:import schemaLocation="http://localhost:8301/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:8301/?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IServiceChat_Connect_InputMessage">
@@ -50,8 +51,14 @@
   <wsdl:message name="IServiceChat_SendMsg_InputMessage">
     <wsdl:part name="parameters" element="tns:SendMsg" />
   </wsdl:message>
+  <wsdl:message name="IServiceChat_UpdateUsersList_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateUsersList" />
+  </wsdl:message>
   <wsdl:message name="IServiceChat_MsgCallback_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:MsgCallback" />
+  </wsdl:message>
+  <wsdl:message name="IServiceChat_UpdateUserListCallback_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:UpdateUserListCallback" />
   </wsdl:message>
   <wsdl:portType name="IServiceChat">
     <wsdl:operation name="Connect">
@@ -65,8 +72,14 @@
     <wsdl:operation name="SendMsg">
       <wsdl:input wsaw:Action="http://tempuri.org/IServiceChat/SendMsg" message="tns:IServiceChat_SendMsg_InputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="UpdateUsersList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceChat/UpdateUsersList" message="tns:IServiceChat_UpdateUsersList_InputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="MsgCallback">
       <wsdl:output wsaw:Action="http://tempuri.org/IServiceChat/MsgCallback" message="tns:IServiceChat_MsgCallback_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateUserListCallback">
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceChat/UpdateUserListCallback" message="tns:IServiceChat_UpdateUserListCallback_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetTcpBinding_IServiceChat" type="tns:IServiceChat">
@@ -96,8 +109,20 @@
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
+    <wsdl:operation name="UpdateUsersList">
+      <soap12:operation soapAction="http://tempuri.org/IServiceChat/UpdateUsersList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
     <wsdl:operation name="MsgCallback">
       <soap12:operation soapAction="http://tempuri.org/IServiceChat/MsgCallback" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateUserListCallback">
+      <soap12:operation soapAction="http://tempuri.org/IServiceChat/UpdateUserListCallback" style="document" />
       <wsdl:output>
         <soap12:body use="literal" />
       </wsdl:output>

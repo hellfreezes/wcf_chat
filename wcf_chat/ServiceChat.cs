@@ -14,11 +14,12 @@ namespace wcf_chat
     public class ServiceChat : IServiceChat
     {
         List<ServerUser> users = new List<ServerUser>();
-        //int nextId = 1;
 
         private String dbFileName;
         private SQLiteConnection m_dbConn;
         private SQLiteCommand m_sqlCmd;
+
+        const string DATA_BASE_PATH = "D:/CSharpProjects/wcf_chat/iComm.db";
 
         public int Connect(string name, string password)
         {
@@ -26,9 +27,17 @@ namespace wcf_chat
 
             ServerUser user = VerifyAccount(name, password);
 
+            if (user == null)
+            {
+                // TODO: обработать!!!!!!
+                // Пользователь не найден.
+                return 0;
+            }
+
             SendMsg(": " + user.Name + "(" + user.Id + ")" + ": подключился к чату", 0);
 
             users.Add(user);
+            
 
             return user.Id;
         }
@@ -63,12 +72,20 @@ namespace wcf_chat
             }
         }
 
+        public void UpdateUsersList()
+        {
+            foreach (ServerUser item in users)
+            {
+                item.Operation.GetCallbackChannel<IServiceChatCallback>().UpdateUserListCallback(null);
+            }
+        }
+
         private void ConnectToBase()
         {
             m_dbConn = new SQLiteConnection();
             m_sqlCmd = new SQLiteCommand();
 
-            dbFileName = "F:/csharp/wcf_chat/iComm.db";
+            dbFileName = DATA_BASE_PATH;
 
             try
             {
@@ -130,5 +147,7 @@ namespace wcf_chat
 
             return null;
         }
+
+        
     }
 }

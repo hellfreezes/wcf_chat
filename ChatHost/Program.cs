@@ -11,14 +11,17 @@ namespace ChatHost
     {
         static void Main(string[] args)
         {
-            string version = "v0.01";
+            string version = "v0.02";
 
             using (var host = new ServiceHost(typeof(wcf_chat.ServiceChat)))
             {
                 host.Open();
+
                 Console.WriteLine("Версия: " + version);
                 Console.WriteLine("Хост стартовал");
                 Console.ReadLine();
+
+                host.Close();
             }
         }
     }
