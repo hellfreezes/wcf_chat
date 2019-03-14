@@ -181,9 +181,17 @@ namespace ChatClient
             SavePropertys(new CustomPropertys { Login = Login, Password = Password });
         }
 
-        public void UpdateUserListCallback(string[] users)
+        public void UpdateUserListCallback(UserInfo[] users)
         {
-            throw new NotImplementedException();
+            if (users == null)
+                return;
+
+            lbUsers.Items.Clear();
+            
+            foreach(UserInfo user in users)
+            {
+                lbUsers.Items.Add(user.Name);
+            }
         }
     }
 }

@@ -2,12 +2,13 @@
 
 namespace wcf_chat
 {
-
-    public class ServerUser
+    class ServerUser
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public OperationContext Operation { get; set; }
+
+        public int CurrentRoomId { get; set; }
     }
 
 }

@@ -15,11 +15,13 @@ namespace wcf_chat
     {
         List<ServerUser> users = new List<ServerUser>();
 
+        List<Room> rooms = new List<Room>();
+
         private String dbFileName;
         private SQLiteConnection m_dbConn;
         private SQLiteCommand m_sqlCmd;
 
-        const string DATA_BASE_PATH = "D:/CSharpProjects/wcf_chat/iComm.db";
+        const string DATA_BASE_PATH = "iComm.db";
 
         public int Connect(string name, string password)
         {
@@ -76,8 +78,31 @@ namespace wcf_chat
         {
             foreach (ServerUser item in users)
             {
-                item.Operation.GetCallbackChannel<IServiceChatCallback>().UpdateUserListCallback(null);
+                //TODO: Каждый раз генерирует список пользователей. ИСПРАВИТЬ!
+                item.Operation.GetCallbackChannel<IServiceChatCallback>().UpdateUserListCallback(GetUsersInfo(users));
             }
+        }
+
+        List<UserInfo> GetUsersInfo(List<ServerUser> users)
+        {
+            List<UserInfo> usersInfo = new List<UserInfo>();
+            foreach (ServerUser user in users)
+            {
+                usersInfo.Add(new UserInfo() { ID = user.Id, Name = user.Name });
+            }
+            return usersInfo;
+        }
+
+        private Room CreateRoom()
+        {
+            //TODO: Комната должна записываться в Базу данных и 
+            //ID должен присваиваться из БАЗЫ
+            Room r = new Room()
+            {
+                ID = 0
+            };
+
+            return r;
         }
 
         private void ConnectToBase()
