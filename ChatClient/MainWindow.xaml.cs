@@ -50,6 +50,7 @@ namespace ChatClient
                 client = new ServiceChatClient(new InstanceContext(this));
                 ID = client.Connect(Login, Password);
                 client.UpdateUsersList();
+                client.RoomListRequest(ID);
                 tbUserName.IsEnabled = false;
                 btnConnect.Content = "Disconnect";
                 isConnected = true;
@@ -62,6 +63,8 @@ namespace ChatClient
             {
                 client.Disconnect(ID);
                 client.UpdateUsersList();
+                //TODO: НИФИГА не работает выбор первого элемента. Исправить!
+                lbRooms.SelectedIndex = 0;
                 tbUserName.IsEnabled = true;
                 btnConnect.Content = "Connect";
                 client = null;
@@ -191,6 +194,21 @@ namespace ChatClient
             foreach(UserInfo user in users)
             {
                 lbUsers.Items.Add(user.Name);
+            }
+        }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        public void UpdateRoomListCallback(Room[] rooms)
+        {
+            lbRooms.Items.Clear();
+
+            foreach(Room r in rooms)
+            {
+                lbRooms.Items.Add(r.Name);
             }
         }
     }

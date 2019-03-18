@@ -9,11 +9,12 @@
     <Grid>
         <TextBox x:Name="tbUserName" HorizontalAlignment="Left" Height="23" Margin="174,10,0,0" TextWrapping="Wrap" Text="User name" VerticalAlignment="Top" Width="552"/>
         <Button x:Name="btnConnect" Click="btnConnect_Click" Content="Connect" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="69" Height="23"/>
-        <ListBox x:Name="lbUsers" HorizontalAlignment="Left" Height="223" Margin="10,38,0,0" VerticalAlignment="Top" Width="159"/>
+        <ListBox x:Name="lbUsers" HorizontalAlignment="Left" Height="134" Margin="10,38,0,0" VerticalAlignment="Top" Width="159"/>
         <ListBox x:Name="lbChat" HorizontalAlignment="Left" Height="223" Margin="174,38,0,0" VerticalAlignment="Top" Width="552"/>
-        <TextBox x:Name="tbMessage" HorizontalAlignment="Left" Height="75" Margin="10,266,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="636" KeyDown="tbMessage_KeyDown"/>
+        <TextBox x:Name="tbMessage" HorizontalAlignment="Left" Height="75" Margin="174,266,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="472" KeyDown="tbMessage_KeyDown"/>
         <Button x:Name="btnSend" Content="Send" HorizontalAlignment="Left" Margin="651,266,0,0" VerticalAlignment="Top" Width="75"/>
         <Button x:Name="btnAccount" Content="Account" HorizontalAlignment="Left" Margin="84,10,0,0" VerticalAlignment="Top" Width="85" Height="23" Click="btnAccount_Click"/>
+        <ListBox x:Name="lbRooms" HorizontalAlignment="Left" Height="164" Margin="10,177,0,0" VerticalAlignment="Top" Width="159" SelectionChanged="ListBox_SelectionChanged"/>
 
     </Grid>
 </Window>

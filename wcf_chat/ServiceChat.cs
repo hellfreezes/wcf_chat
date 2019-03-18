@@ -13,7 +13,7 @@ namespace wcf_chat
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class ServiceChat : IServiceChat
     {
-        List<ServerUser> users = new List<ServerUser>();
+        Dictionary<int, ServerUser> users = new Dictionary<int, ServerUser>();
 
         List<Room> rooms = new List<Room>();
 
@@ -38,7 +38,7 @@ namespace wcf_chat
 
             SendMsg(": " + user.Name + "(" + user.Id + ")" + ": подключился к чату", 0);
 
-            users.Add(user);
+            users.Add(user.Id, user);
             
 
             return user.Id;
@@ -46,22 +46,22 @@ namespace wcf_chat
 
         public void Disconnect(int id)
         {
-            var user = users.FirstOrDefault(i => i.Id == id);
-
-            if (user != null)
+            if (!users.ContainsKey(id))
             {
-                users.Remove(user);
-                SendMsg(user.Name + " покинул чат.", 0);
+                Console.WriteLine("Пользователь с ID:{0} не найден", id);
+                return;
             }
+            SendMsg(users[id].Name + " покинул чат.", 0);
+            users.Remove(id);
         }
 
         public void SendMsg(string msg, int id)
         {
-            foreach (ServerUser item in users)
+            foreach (KeyValuePair<int, ServerUser> item in users)
             {
                 string answer = DateTime.Now.ToShortTimeString() + ": ";
 
-                var user = users.FirstOrDefault(i => i.Id == id);
+                var user = users[id];
 
                 if (user != null) 
                 {
@@ -70,25 +70,32 @@ namespace wcf_chat
 
                 answer += msg;
 
-                item.Operation.GetCallbackChannel<IServiceChatCallback>().MsgCallback(answer);
+                item.Value.Operation.GetCallbackChannel<IServiceChatCallback>().MsgCallback(answer);
             }
         }
 
         public void UpdateUsersList()
         {
-            foreach (ServerUser item in users)
+            foreach (KeyValuePair<int, ServerUser> item in users)
             {
                 //TODO: Каждый раз генерирует список пользователей. ИСПРАВИТЬ!
-                item.Operation.GetCallbackChannel<IServiceChatCallback>().UpdateUserListCallback(GetUsersInfo(users));
+                item.Value.Operation.GetCallbackChannel<IServiceChatCallback>().UpdateUserListCallback(GetUsersInfo(users));
             }
         }
 
-        List<UserInfo> GetUsersInfo(List<ServerUser> users)
+        // Запрос на получение списка комнат доступных для конкретного юзера (userID)
+        public void RoomListRequest(int userId)
+        {
+            List<Room> result = GetAllPublicRooms();
+            users[userId].Operation.GetCallbackChannel<IServiceChatCallback>().UpdateRoomListCallback(result);
+        }
+
+        List<UserInfo> GetUsersInfo(Dictionary<int, ServerUser> users)
         {
             List<UserInfo> usersInfo = new List<UserInfo>();
-            foreach (ServerUser user in users)
+            foreach (KeyValuePair<int, ServerUser> user in users)
             {
-                usersInfo.Add(new UserInfo() { ID = user.Id, Name = user.Name });
+                usersInfo.Add(new UserInfo() { ID = user.Value.Id, Name = user.Value.Name });
             }
             return usersInfo;
         }
@@ -173,6 +180,57 @@ namespace wcf_chat
             return null;
         }
 
-        
+        private List<Room> GetAllPublicRooms()
+        {
+            List<Room> list = new List<Room>();
+
+            DataTable dTable = new DataTable();
+
+            String sqlQuery;
+
+            if (m_dbConn.State != ConnectionState.Open)
+            {
+                Console.WriteLine("SQL base not connected");
+                return null;
+            }
+
+            try
+            {
+                sqlQuery = "SELECT * FROM `rooms` WHERE `public`='TRUE'";
+
+
+                SQLiteDataAdapter adapter = new SQLiteDataAdapter(sqlQuery, m_dbConn);
+                adapter.Fill(dTable);
+
+                if (dTable.Rows.Count > 0)
+                {
+                    foreach(DataRow row in dTable.Rows)
+                    {
+
+                        Room r = new Room()
+                        {
+                            ID = int.Parse(row[0].ToString()),
+                            Name = row[1].ToString(),
+                            IsPublic = bool.Parse( row[2].ToString()),
+                            AuthorID = int.Parse(row[3].ToString())
+                        };
+
+                        
+                        list.Add(r);
+                    }
+
+                    return list; //Вернуть список публичных комнат
+
+                }
+                else
+                    return null; //Публичных комнат не найдено или произошла ошибка
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+
+            return null; //Публичных комнат не найдено или произошла ошибка
+        }
     }
 }

@@ -74,6 +74,131 @@ namespace ChatClient.ServiceChat {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Room", Namespace="http://schemas.datacontract.org/2004/07/wcf_chat")]
+    [System.SerializableAttribute()]
+    public partial class Room : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int AuthorIDField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int GuestField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IDField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool IsPublicField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool IsSingleField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int AuthorID {
+            get {
+                return this.AuthorIDField;
+            }
+            set {
+                if ((this.AuthorIDField.Equals(value) != true)) {
+                    this.AuthorIDField = value;
+                    this.RaisePropertyChanged("AuthorID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Guest {
+            get {
+                return this.GuestField;
+            }
+            set {
+                if ((this.GuestField.Equals(value) != true)) {
+                    this.GuestField = value;
+                    this.RaisePropertyChanged("Guest");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ID {
+            get {
+                return this.IDField;
+            }
+            set {
+                if ((this.IDField.Equals(value) != true)) {
+                    this.IDField = value;
+                    this.RaisePropertyChanged("ID");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsPublic {
+            get {
+                return this.IsPublicField;
+            }
+            set {
+                if ((this.IsPublicField.Equals(value) != true)) {
+                    this.IsPublicField = value;
+                    this.RaisePropertyChanged("IsPublic");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsSingle {
+            get {
+                return this.IsSingleField;
+            }
+            set {
+                if ((this.IsSingleField.Equals(value) != true)) {
+                    this.IsSingleField = value;
+                    this.RaisePropertyChanged("IsSingle");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceChat.IServiceChat", CallbackContract=typeof(ChatClient.ServiceChat.IServiceChatCallback))]
     public interface IServiceChat {
@@ -101,6 +226,12 @@ namespace ChatClient.ServiceChat {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/UpdateUsersList")]
         System.Threading.Tasks.Task UpdateUsersListAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/RoomListRequest")]
+        void RoomListRequest(int userId);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/RoomListRequest")]
+        System.Threading.Tasks.Task RoomListRequestAsync(int userId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -111,6 +242,9 @@ namespace ChatClient.ServiceChat {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/UpdateUserListCallback")]
         void UpdateUserListCallback(ChatClient.ServiceChat.UserInfo[] users);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IServiceChat/UpdateRoomListCallback")]
+        void UpdateRoomListCallback(ChatClient.ServiceChat.Room[] rooms);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -171,6 +305,14 @@ namespace ChatClient.ServiceChat {
         
         public System.Threading.Tasks.Task UpdateUsersListAsync() {
             return base.Channel.UpdateUsersListAsync();
+        }
+        
+        public void RoomListRequest(int userId) {
+            base.Channel.RoomListRequest(userId);
+        }
+        
+        public System.Threading.Tasks.Task RoomListRequestAsync(int userId) {
+            return base.Channel.RoomListRequestAsync(userId);
         }
     }
 }

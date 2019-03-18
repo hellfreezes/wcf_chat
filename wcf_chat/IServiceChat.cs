@@ -22,6 +22,9 @@ namespace wcf_chat
 
         [OperationContract(IsOneWay = true)]
         void UpdateUsersList();
+
+        [OperationContract(IsOneWay = true)]
+        void RoomListRequest(int userId);
     }
 
     public interface IServiceChatCallback
@@ -31,5 +34,8 @@ namespace wcf_chat
 
         [OperationContract(IsOneWay = true)]
         void UpdateUserListCallback(List<UserInfo> users);
+
+        [OperationContract(IsOneWay = true)]
+        void UpdateRoomListCallback(List<Room> rooms);
     }
 }
